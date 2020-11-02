@@ -46,3 +46,14 @@ app.use((err, req, res, next) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+
+// Database Schema
+let exerciseSessionSchema = new.mongoose.Schema({
+  description: {type:String, required: true},
+  duration: {type:Number, required: true},
+  date: String
+  
+});
+
+
+
