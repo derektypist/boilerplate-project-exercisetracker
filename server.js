@@ -88,7 +88,7 @@ app.post('/api/exercise/add', (request, response) => {
 
 });
 
-app.get('api/exercise/log', (request, response) => {
+app.get('/api/exercise/log', (request, response) => {
   User.findById(request.query.userId, (error, result) => {
     if(!error) {
       let responseObject = result;
