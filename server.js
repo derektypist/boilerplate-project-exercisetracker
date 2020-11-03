@@ -76,4 +76,38 @@ app.post('/api/exercise/new-user', bodyParser.urlencoded({extended: false}), (re
   });
 });
 
+app.get('/api/exercise/users', (request, response) => {
+  User.find((error, arrayOfUsers) => {
+    if(!error) {
+      response.json(arrayOfUsers);
+    }
+  });
+});
 
+app.post('/api/exercise/add', bodyParser.urlencoded({extended: false}), (request, response) => {
+  let newSession = new Session({
+    description: request.body.description,
+    duration: parseInt(request.body.duration),
+    date: request.body.date
+  });
+
+  if (newSession.date === '') {
+    newSession.date = new Date().toISOString().substring(0,10);
+  }
+
+  User.findByIdAndUpdate(request.body.userId, 
+  {$push: {log:newSession}},
+  {new: true},
+  (error, updatedUser) => {
+    if(!error) {
+      let responseObject = {};
+      responseObject['_id'] = updatedUser.id;
+      responseObject['username'] = updatedUser.username;
+      responseObject['date'] = new Date(newSession.date).toDateString();
+      responseObject['description'] = newSession.description;
+      responseObject['duration'] = newSession.duration;
+      response.json(responseObject);
+    }
+  });
+
+});
