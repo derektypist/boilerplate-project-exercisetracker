@@ -60,8 +60,20 @@ let userSchema = new mongoose.Schema({
   log: [exerciseSessionSchema]
 });
 
-let session = mongoose.model('Session', exerciseSessionSchema);
 
+let Session = mongoose.model('Session', exerciseSessionSchema);
+let User = mongoose.model('User', userSchema);
 
+app.post('/api/exercise/new-user', bodyParser.urlencoded({extended: false}), (request, response) => {
+  let newUser = new User({username: request.body.username});
+  newUser.save((error, savedUser) => {
+    if(!error) {
+      let responseObject = {};
+      responseObject['username'] = savedUser.username;
+      responseObject['_id'] = savedUser.id;
+      response.json(responseObject);
+    }
+  });
+});
 
 
