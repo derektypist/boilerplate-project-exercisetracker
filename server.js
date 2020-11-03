@@ -111,3 +111,43 @@ app.post('/api/exercise/add', bodyParser.urlencoded({extended: false}), (request
   });
 
 });
+
+app.get('api/exercise/log', (request, response) => {
+  User.findById(request.query.userId, (error, result) => {
+    if(!error) {
+      let responseObject = result;
+
+      if (request.query.from || request.query.to) {
+        let fromDate = new Date(0);
+        let toDate = new Date();
+
+        if (request.query.from) {
+          fromDate = new Date(request.query.from);
+        }
+
+        if (request.query.to) {
+          toDate = new Date(request.query.to);
+        }
+
+        fromDate = fromDate.getTime();
+        toDate = toDate.getTime();
+
+        responseObject.log = responseObject.log.filter((session) => {
+          let sessionDate = new Date(session.date).getTime();
+
+          return sessionDate >= fromDate && sessionDate <= toDate;
+        });
+
+      }
+
+      if (request.query.limit) {
+        responseObject.log = responseObject.log.slice(request.query.limit);
+      }
+
+      responseObject = responseObject.toJSON();
+      responseObject['count'] = result.log.length;
+      response.json(responseObject);
+
+    }
+  });
+});
