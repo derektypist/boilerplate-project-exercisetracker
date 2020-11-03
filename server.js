@@ -48,12 +48,20 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 })
 
 // Database Schema
-let exerciseSessionSchema = new.mongoose.Schema({
+let exerciseSessionSchema = new mongoose.Schema({
   description: {type:String, required: true},
   duration: {type:Number, required: true},
   date: String
   
 });
+
+let userSchema = new mongoose.Schema({
+  username: {type: String, required:true},
+  log: [exerciseSessionSchema]
+});
+
+let session = mongoose.model('Session', exerciseSessionSchema);
+
 
 
 
